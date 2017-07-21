@@ -1,2 +1,2 @@
-$ docker run hello-world
-$ docker --version
+FROM ubuntu:14.04
+RUN touch ~/file.txt
