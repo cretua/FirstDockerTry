@@ -1,0 +1,130 @@
+Stop all containers :
+docker stop $(docker ps -aq)
+
+Remove all containers :
+docker rm $(docker ps -aq)
+
+Remove all images :
+docker rmi -f $(docker images -q)
+======================================================================================================================================================
+Building the images :
+
+docker build -t mymail -f Dockerfile-mail .
+docker build -t mydb -f Dockerfile-db .
+======================================================================================================================================================
+Testing the mail :
+
+sudo touch [file with extension]
+sudo chmod 777 [file with extension]
+sudo echo "Something new" >> [file with extension]
+
+subject="Info for : $(date +'%d/%m/%Y %T')"
+echo "Mail body should be here" | sudo mail -s "$subject" -A newfile.txt someoneiknow@yahoo.co.uk
+
+======================================================================================================================================================
+Creating the mysql container :
+
+docker run --name mysqldb -e MYSQL_ROOT_PASSWORD=andrei -d mysql
+OR
+docker run --name mysqldb -e MYSQL_ROOT_PASSWORD=andrei -d mysql:5.7.19
+
+docker exec -it mysqldb bash
+======================================================================================================================================================
+	Trying to get rid of the annoying "secure_file_priv" option in the server : 
+
+	echo 'secure_file_priv=""' >> /etc/mysql/my.cnf
+
+	echo 'secure_file_priv= /var/lib/mysql-files/' >> /etc/mysql/my.cnf
+	sed -i '1i[mysqld]' /etc/mysql/my.cnf
+	cp /etc/mysql/my.cnf /var/lib/mysql-files/
+
+======================================================================================================================================================
+Logging on to the mysql server with the created password :
+
+mysql -u root -pandrei
+======================================================================================================================================================
+Creating a test database :
+
+create database testdata;
+
+show databases;
+
+use testdata;
+
+create table productdata(id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, product CHAR(35), year INT(9), version INT(9), line CHAR(25));
+
+insert into productdata(id,product,year,version,line) VALUES ('1', 'Financial office pro', '2017', '17', 'professional');
+insert into productdata(id,product,year,version,line) VALUES ('2', 'Financial office premium', '2016', '16', 'professional');
+insert into productdata(id,product,year,version,line) VALUES ('3', 'Financial office standard', '2016', '16', 'standard');
+insert into productdata(id,product,year,version,line) VALUES ('4', 'Financial office plus', '2017', '17', 'standard');
+insert into productdata(id,product,year,version,line) VALUES ('5', 'Wawi pro', '2017', '17', 'professional');
+insert into productdata(id,product,year,version,line) VALUES ('6', 'Wawi pro', '2016', '16', 'professional');
+======================================================================================================================================================
+SELECT * FROM productdata ;
+
+SELECT * FROM productdata \G;
+(vertical listing)
+
+SELECT * FROM productdata WHERE line = "standard";
+
+SELECT * FROM productdata WHERE line = "standard" INTO OUTFILE '/var/lib/mysql-files/output.csv' FIELDS TERMINATED BY ',';
+SELECT * FROM productdata WHERE line = "standard" INTO OUTFILE 'output.csv' FIELDS TERMINATED BY ',';(did not work like this due to secure_file_priv option)
+======================================================================================================================================================
+SELECT VERSION();
+
+SELECT @@GLOBAL.secure_file_priv;
+
+SHOW VARIABLES LIKE "secure_file_priv";
+
+======================================================================================================================================================
+Save database with table in file :
+
+mysqldump -u root -pandrei testdata productdata > mytestdb.sql
+
+======================================================================================================================================================
+Get the ID of a container when you know the name
+
+docker inspect --format="{{.Id}}" [CONTAINER NAME]
+
+Example : 
+docker inspect --format="{{.Id}}" mysqldb
+======================================================================================================================================================
+Copy a file from a container to the host, when you know the name of the container :
+
+docker cp "$(docker inspect --format="{{.Id}}" [CONTAINER NAME]):[FILE PATH/FILE NAME]" [HOST PATH]
+
+Example :mytestdb.sql
+docker cp "$(docker inspect --format="{{.Id}}" mysqldb):/var/lib/mysql-files/output.csv" C:\Users\cretua\Desktop
+docker cp de6cf7a1ed8f0b36a638e82d9d06a24f7ac297372a105d67ba64ab40b95c3c25:/var/lib/mysql-files/output.csv C:\Users\cretua\Desktop
+docker cp de6cf7a1ed8f0b36a638e82d9d06a24f7ac297372a105d67ba64ab40b95c3c25:/mytestdb.sql C:\Users\cretua\Desktop
+======================================================================================================================================================
+docker cp C:\Users\cretua\Desktop\ExportData.sql de6cf7a1ed8f0b36a638e82d9d06a24f7ac297372a105d67ba64ab40b95c3c25:/var/
+
+
+
+SET @table_name = 'productdata';
+SET @table_schema = 'testdata';
+SELECT GROUP_CONCAT(QUOTE(`column_name`)) AS columns FROM information_schema.columns WHERE table_schema = 'testdata' AND table_name = 'productdata';
+SELECT QUOTE(`column_name`) AS columns FROM information_schema.columns WHERE table_schema = 'testdata' AND table_name = 'productdata';
+SELECT * FROM testdata.productdata WHERE line = "standard";
+
+=======================================================================================================================================================
+
+Remote DB :
+mysql -u sql8190040 -ptZd4HCCttA -h sql8.freesqldatabase.com sql8190040 
+mysql -u sql8190040 -ptZd4HCCttA -h sql8.freesqldatabase.com sql8190040 -e 'SELECT * FROM sql8190040.test_table' > /var/lib/mysql-files/output_remote.csv
+
+SELECT * FROM sql8190040.test_table;
+
+source /var/ExportData_Remote.sql
+
+show databases;
+use sql8190040;
+select * from test_table;
+
+
+grant all privileges on *.* to 'sql8190040'@'%' with grant option;
+
+grant all privileges on sql8190040.* to sql8190040@localhost identified by 'tZd4HCCttA';
+
+grant file on sql8190040.* to sql8190040@localhost identified by 'tZd4HCCttA';

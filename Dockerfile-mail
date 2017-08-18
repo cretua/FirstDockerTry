@@ -1,0 +1,15 @@
+FROM ubuntu:latest
+
+RUN apt-get update && \
+    apt-get install -y sudo && \
+    apt-get install -y vim && \
+	apt-get install -y ssmtp && \
+    apt-get install -y mailutils && \
+	apt-get clean
+
+RUN useradd -m andrei && echo "andrei:andrei" | chpasswd && adduser andrei sudo
+
+COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
+
+USER andrei
+CMD /bin/bash
