@@ -1,9 +1,16 @@
+======================================================================================================================================================
+Show running containers :
+docker ps
+======================================================================================================================================================
+Show all containers :
+docker ps -a
+======================================================================================================================================================
 Stop all containers :
 docker stop $(docker ps -aq)
-
+======================================================================================================================================================
 Remove all containers :
 docker rm $(docker ps -aq)
-
+======================================================================================================================================================
 Remove all images :
 docker rmi -f $(docker images -q)
 ======================================================================================================================================================
@@ -114,6 +121,8 @@ Remote DB :
 mysql -u sql8190040 -ptZd4HCCttA -h sql8.freesqldatabase.com sql8190040 
 mysql -u sql8190040 -ptZd4HCCttA -h sql8.freesqldatabase.com sql8190040 -e 'SELECT * FROM sql8190040.test_table' > /var/lib/mysql-files/output_remote.csv
 
+mysql -u sql8190040 -ptZd4HCCttA -h sql8.freesqldatabase.com sql8190040 < /var/ExportData_Remote.sql > /var/lib/mysql-files/output_remote.csv
+
 SELECT * FROM sql8190040.test_table;
 
 source /var/ExportData_Remote.sql
@@ -128,3 +137,45 @@ grant all privileges on *.* to 'sql8190040'@'%' with grant option;
 grant all privileges on sql8190040.* to sql8190040@localhost identified by 'tZd4HCCttA';
 
 grant file on sql8190040.* to sql8190040@localhost identified by 'tZd4HCCttA';
+
+=======================================================================================================================================================
+Start the container with the id corresponding to a certain name(in this case "mymailcont")
+docker start "$(docker inspect --format="{{.Id}}" mymailcont)"
+
+=======================================================================================================================================================
+Stop the container with the id corresponding to a certain name(in this case "mymailcont")
+docker stop "$(docker inspect --format="{{.Id}}" mymailcont)"
+
+=======================================================================================================================================================
+Create a volume with a certain name :
+docker volume create --name SqlMailShare
+
+=======================================================================================================================================================
+Show all available volumes :
+docker volume ls
+
+=======================================================================================================================================================
+Get the IP addresses of all your containers :
+docker inspect -f '{{.Name}} - {{.NetworkSettings.IPAddress }}' $(docker ps -aq)
+
+=======================================================================================================================================================
+docker run mymail -v SqlMailShare:/var/lib/mysql-files/
+=======================================================================================================================================================
+docker run -d -p 9090:80 --name mymailcont1 mymail
+(creating a mymailcont1 container with exposed ports for outside communication)
+
+=======================================================================================================================================================
+#Create a container named "mymailcont" from the "mymail" image
+#and share data from the "tmp" folder in the container via the volume named "SqlMailShare"
+
+docker run --name mymailcont -v SqlMailShare:/SqlMailShare -d mymail
+docker run -i --name mymailcont -v SqlMailShare:/SqlMailShare -d mymail
+docker create --name mymailcont -v SqlMailShare:/SqlMailShare -d mymail
+docker run -d --name mymailcont -v SqlMailShare:/SqlMailShare mymail
+docker container create --name mymailcont -v SqlMailShare:/SqlMailShare mymail(still not creating a running container - must check)
+
+docker run --name mymailcont -v SqlMailShare:/SqlMailShare -d mymail sleep 60
+docker run --name mymailcont -v SqlMailShare:/SqlMailShare -d mymail tail -f /dev/null
+(tail -f /dev/null is used to keep the container running, otherwise it exits when using bash and -d flag )
+
+

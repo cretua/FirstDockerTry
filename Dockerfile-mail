@@ -12,4 +12,5 @@ RUN useradd -m andrei && echo "andrei:andrei" | chpasswd && adduser andrei sudo
 COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
 
 USER andrei
-CMD /bin/bash
+
+CMD tail -f /dev/null
