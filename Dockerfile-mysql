@@ -1,0 +1,3 @@
+FROM mysql:5.7.19
+COPY ExportData_Remote2.sql /var/
+CMD mysql -u sql8190040 -ptZd4HCCttA -h sql8.freesqldatabase.com sql8190040 < /var/ExportData_Remote2.sql > /SqlMailShare/output_remote.csv && tail -f

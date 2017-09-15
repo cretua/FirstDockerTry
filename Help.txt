@@ -177,5 +177,9 @@ docker container create --name mymailcont -v SqlMailShare:/SqlMailShare mymail(s
 docker run --name mymailcont -v SqlMailShare:/SqlMailShare -d mymail sleep 60
 docker run --name mymailcont -v SqlMailShare:/SqlMailShare -d mymail tail -f /dev/null
 (tail -f /dev/null is used to keep the container running, otherwise it exits when using bash and -d flag )
+=======================================================================================================================================================
+#Execute command(in Unix using /bin/sh -c) in container(in this case "mysqldb") without accesing it
+docker exec mysqldb /bin/sh -c "mysql -u sql8190040 -ptZd4HCCttA -h sql8.freesqldatabase.com sql8190040 < /var/ExportData_Remote2.sql > /SqlMailShare/output_remote.csv"
+
 
 

@@ -1,0 +1,44 @@
+==========================================================================================
+#Build the mymail image for the mysql server
+
+docker build -t mysqlimg -f Dockerfile-mysql .
+
+===========================================================================================
+#Create a volume named "SqlMailShare" to share data between containers :
+
+docker volume create --name SqlMailShare
+
+===========================================================================================
+#Build the mymail image for the SMTTP mail server
+
+docker build -t mymail -f Dockerfile-mail .
+
+==========================================================================================
+#Create a container named "mysqldb" from the "mysqlimg" image 
+#the root password for the "root" user is "andrei"
+#the "SqlMailShare" volume is used to share data and the "/SqlMailShare" folder is where the data is shared
+
+docker run -d -p 5454:111 --name mysqldb -v SqlMailShare:/SqlMailShare -e MYSQL_ROOT_PASSWORD=andrei mysqlimg
+
+===========================================================================================
+#Create a container named "mymailcont" from the "mymail" image
+#attach the volume named "SqlMailShare" from the "mysqldb" container
+
+docker run -d -p 9090:80 --name mymailcont --volumes-from mysqldb mymail
+
+==========================================================================================
+#Stop the 2 containers
+
+docker stop mymailcont
+docker stop mysqldb
+
+==========================================================================================
+#Delete the 2 containers, the volume and the images
+
+docker rm mymailcont
+docker rm mysqldb
+docker volume rm SqlMailShare
+docker rmi mymail
+docker rmi mysqlimg
+docker rmi mysql:5.7.19
+
