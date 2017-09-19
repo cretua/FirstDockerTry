@@ -1,3 +1,3 @@
 FROM mysql:5.7.19
 COPY ExportData_Remote2.sql /var/
-CMD mysql -u root -proot -h 10.12.192.128:3310 testdata < /var/ExportData_Remote2.sql > /SqlMailShare/output_remote.csv && tail -f /dev/null
+CMD mysql -u root -proot -h 10.12.192.128 -P 3310 testdata < /var/ExportData_Remote2.sql > /SqlMailShare/output_remote.csv && tail -f /dev/null
