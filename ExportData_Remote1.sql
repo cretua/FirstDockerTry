@@ -1,6 +1,6 @@
 /* Change table_name, database_name, set the default concatenation limit and output file */
-SET @table_name = 'test_table';
-SET @table_schema = 'sql8190040';
+SET @table_name = 'productdata';
+SET @table_schema = 'testdata';
 SET @output_file = '/var/lib/mysql-files/output.csv';
 SET @default_group_concat_max_len = (SELECT @@group_concat_max_len);
 
