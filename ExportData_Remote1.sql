@@ -16,23 +16,23 @@ SET @col_names = (
   
 SET @cols = CONCAT('(SELECT ', @col_names, ')');
 
-/*
+
 SET @query = CONCAT('(SELECT * FROM ', @table_schema, '.', @table_name,
-  ' WHERE line = "standard" INTO OUTFILE \'/SqlMailShare/output_remote.csv\'
+  ' WHERE line = "standard" INTO OUTFILE \'/var/lib/mysql-files/output.csv\'
   FIELDS ENCLOSED BY \'\\\'\' TERMINATED BY \'\t\' ESCAPED BY \'\'
   LINES TERMINATED BY \'\n\')');
-*/
+
   /*
 SET @query = CONCAT('(SELECT * FROM ', @table_schema, '.', @table_name,
   ' INTO OUTFILE \'/var/lib/mysql-files/output.csv\')');
 */
 
- 
+/* 
 SET @query = CONCAT('(SELECT * FROM ', @table_schema, '.', @table_name,
-  ' INTO OUTFILE \'/SqlMailShare/output_remote.csv\'
+  ' INTO OUTFILE \'/var/lib/mysql-files/output.csv\'
   FIELDS ENCLOSED BY \'\\\'\' TERMINATED BY \'\t\' ESCAPED BY \'\'
   LINES TERMINATED BY \'\n\')');
-
+*/
   
 /* Concatenates column names to query */
 SET @sql = CONCAT(@cols, ' UNION ALL ', @query);
