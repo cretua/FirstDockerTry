@@ -1,8 +1,9 @@
 /* Change table_name, database_name, set the default concatenation limit and output file */
-SET @table_name = 'productdata';
 SET @table_schema = 'testdata';
-SET @output_file = '/var/lib/mysql-files/output.csv';
+SET @table_name = 'productdata';
 SET @default_group_concat_max_len = (SELECT @@group_concat_max_len);
+/*SET @output_file = '/var/lib/mysql-files/output.csv';*/
+
 
 /* Sets Group Concat Max Limit larger for tables with a lot of columns */
 SET SESSION group_concat_max_len = 1000000;
@@ -17,7 +18,7 @@ SET @cols = CONCAT('(SELECT ', @col_names, ')');
 
 
 SET @query = CONCAT('(SELECT * FROM ', @table_schema, '.', @table_name,
-  ' WHERE line = "standard" INTO OUTFILE \'/var/lib/mysql-files/output_remote.csv\'
+  ' WHERE line = "standard" INTO OUTFILE \'/SqlMailShare/output_remote.csv\'
   FIELDS ENCLOSED BY \'\\\'\' TERMINATED BY \'\t\' ESCAPED BY \'\'
   LINES TERMINATED BY \'\n\')');
 
