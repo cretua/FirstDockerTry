@@ -13,4 +13,4 @@ COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
 
 USER andrei
 
-CMD echo 'Attached are the results for the sql8190040 database interrogation' | mail -s 'Results for db interrogation' -A /SqlMailShare/output_remote.csv someoneiknow@yahoo.co.uk && tail -f /dev/null
+CMD echo 'Attached are the results for the [testdata] database interrogation' | mail -s 'Results for db interrogation' -A /SqlMailShare/output_remote.csv someoneiknow@yahoo.co.uk && tail -f /dev/null
