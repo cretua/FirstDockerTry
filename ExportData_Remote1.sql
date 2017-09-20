@@ -18,8 +18,7 @@ SET @cols = CONCAT('(SELECT ', @col_names, ')');
 
 
 SET @query = CONCAT('(SELECT * FROM ', @table_schema, '.', @table_name,
-  ' WHERE line = "standard" INTO OUTFILE \'/SqlMailShare/output_remote.csv\'
-  FIELDS ENCLOSED BY \'\\\'\' TERMINATED BY \'\t\' ESCAPED BY \'\'
+  ' WHERE line = "standard" FIELDS ENCLOSED BY \'\\\'\' TERMINATED BY \'\t\' ESCAPED BY \'\'
   LINES TERMINATED BY \'\n\')');
 
   /*
